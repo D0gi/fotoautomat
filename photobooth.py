@@ -18,7 +18,7 @@ import pygame
 fuser='pi2'
 key='a'
 secret='hier bitte eigene Dateneintragen'
-
+list=['3_', '2_', '1_', '0_']
 
 
 def shot():
@@ -27,21 +27,16 @@ def shot():
    Zeit= Zeit.replace(":", "")
    Datei="./upload/stecker" + Zeit+ ".jpg"
    
-   for i in range (0 ,0):
-      PiCam.led = False
-      time.sleep (0.2)
-      PiCam.led = True
-      time.sleep (0.2)
+   for i in list:
 
-   PiCam.annotate_text="\n>>>3<<<"
-   time.sleep(1)
-   PiCam.annotate_text="\n>>2<<"
-   time.sleep(1)
-   PiCam.annotate_text="\n>1<"
-   time.sleep(0.5)
-   PiCam.annotate_text="\nSTECKER!"
-   time.sleep(0.5)
-   PiCam.annotate_text=""
+     nmbr = Image.open('./' + i + '.png')
+     size = Image.new('RGB', (       ((nmbr.size[0] + 31) // 32) * 32,       ((nmbr.size[1] + 15) // 16) * 16, ) )
+     size.paste(nmbr, (0, 0))
+     c = PiCam.add_overlay(size.tostring(), size=nmbr.size)
+     c.alpha = 40
+     c.layer = 3
+     time.sleep(1)
+     PiCam.remove_overlay(c)
   
    print "Aufnahme"
    PiCam.capture(Datei)
@@ -50,10 +45,7 @@ def shot():
    img = Image.open(Datei)
    # Create an image padded to the required size with
    # mode 'RGB'
-   pad = Image.new('RGB', (
-       ((img.size[0] + 31) // 32) * 32,
-       ((img.size[1] + 15) // 16) * 16,
-       ))
+   pad = Image.new('RGB', (       ((img.size[0] + 31) // 32) * 32,       ((img.size[1] + 15) // 16) * 16, ) )
    # Paste the original image into the padded one
    pad.paste(img, (0, 0))
    # Add the overlay with the padded image as the source,
